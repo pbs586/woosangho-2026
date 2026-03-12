@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 모드 - 우상호 캠페인</title>
+    <!-- Google Fonts: Outfit, Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;600;800&family=Black+Han+Sans&display=swap"
+        rel="stylesheet">
+    <!-- Pretendard Variable Font -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container {
+            padding: 80px 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cms-form {
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+        }
+
+        .cms-form h2 {
+            margin-bottom: 24px;
+            color: var(--primary-dark);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+        }
+
+        .btn-submit {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+        }
+
+        .status-msg {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status-msg.success {
+            background: #def7ec;
+            color: #03543f;
+            display: block;
+        }
+
+        .status-msg.error {
+            background: #fde8e8;
+            color: #9b1c1c;
+            display: block;
+        }
+
+        /* Login Overlay */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-box h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: var(--primary-dark);
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body style="background: #f8fafc;">
+
+    <!-- Login Overlay -->
+    <div id="login-overlay">
+        <div class="login-box">
+            <h1>🔐 관리자 인증</h1>
+            <p style="margin-bottom: 24px; color: #64748b;">관리 시스템 접근을 위해 비밀번호를 입력하세요.</p>
+            <input type="password" id="admin-password-input" placeholder="비밀번호 입력">
+            <button id="login-btn" class="btn-submit">인증하기</button>
+            <p id="login-error" style="color: #ef4444; margin-top: 15px; display: none;">비밀번호가 올바르지 않습니다.</p>
+        </div>
+    </div>
+
+    <nav class="navbar" style="background: white;">
+        <div class="container">
+            <a href="index.html" class="logo"><span>관리자 모드</span> 우상호</a>
+            <ul class="nav-links">
+                <li><a href="index.html">홈으로 나가기</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <!-- 뉴스 등록 -->
+        <div class="cms-form">
+            <h2>📰 뉴스 게시물 등록</h2>
+            <form id="news-form">
+                <div class="form-group">
+                    <label>뉴스 제목</label>
+                    <input type="text" id="news-title" required placeholder="제목을 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label>게시 일자</label>
+                    <input type="date" id="news-date" required>
+                </div>
+                <div class="form-group">
+                    <label>본문 요약</label>
+                    <textarea id="news-content" rows="2" placeholder="간단한 요약 설명을 입력하세요"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>상세 내용</label>
+                    <textarea id="news-detail-content" rows="6" placeholder="상세한 뉴스 내용을 입력하세요"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>관련 링크 (바로가기)</label>
+                    <input type="url" id="news-link" placeholder="https://news.naver.com/...">
+                </div>
+                <div class="form-group">
+                    <label>썸네일 이미지</label>
+                    <input type="file" id="news-thumbnail" accept="image/*">
+                </div>
+                <button type="submit" class="btn-submit">뉴스 등록하기</button>
+                <div id="news-status" class="status-msg"></div>
+            </form>
+        </div>
+
+        <!-- 뉴스 관리 -->
+        <div class="cms-form">
+            <h2>📋 등록된 뉴스 관리</h2>
+            <div id="news-manage-list" style="margin-top: 20px;">
+                <!-- 뉴스 목록이 동적으로 로드됨 -->
+            </div>
+        </div>
+
+        <!-- 사진 갤러리 등록 -->
+        <div class="cms-form">
+            <h2>📸 현장 사진 업로드</h2>
+            <form id="gallery-form">
+                <div class="form-group">
+                    <label>사진 설명</label>
+                    <input type="text" id="gallery-desc" placeholder="사진에 대한 설명을 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label>사진 파일 (다중 선택 가능)</label>
+                    <input type="file" id="gallery-photos" accept="image/*" multiple required>
+                </div>
+                <button type="submit" class="btn-submit">사진 업로드하기</button>
+                <div id="gallery-status" class="status-msg"></div>
+            </form>
+        </div>
+
+        <!-- 사진 관리 목록 -->
+        <div class="cms-form">
+            <h2>🖼️ 활동 현장 사진 관리</h2>
+            <div id="gallery-manage-list"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 20px;">
+                <!-- 사진 목록이 동적으로 로드됨 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api';
+
+        // 헬퍼: 인증 헤더 생성
+        const getAuthHeader = () => ({
+            'x-admin-password': sessionStorage.getItem('adminPassword')
+        });
+
+        const loginOverlay = document.getElementById('login-overlay');
+        const passwordInput = document.getElementById('admin-password-input');
+        const loginBtn = document.getElementById('login-btn');
+        const loginError = document.getElementById('login-error');
+
+        // 인증 로직
+        function checkAuth() {
+            if (sessionStorage.getItem('adminPassword')) {
+                loginOverlay.style.display = 'none';
+                loadNewsManageList();
+                loadGalleryManageList();
+            }
+        }
+
+        loginBtn.addEventListener('click', () => {
+            const pwd = passwordInput.value;
+            if (pwd === 'woo2026!') {
+                sessionStorage.setItem('adminPassword', pwd);
+                loginOverlay.style.display = 'none';
+                loadNewsManageList();
+                loadGalleryManageList();
+            } else {
+                loginError.style.display = 'block';
+            }
+        });
+
+        passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loginBtn.click();
+        });
+
+        // 1. 뉴스 관리 로직
+        let editingNewsId = null;
+
+        const newsForm = document.getElementById('news-form');
+        const newsStatus = document.getElementById('news-status');
+
+        newsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('title', document.getElementById('news-title').value);
+            formData.append('date', document.getElementById('news-date').value);
+            formData.append('content', document.getElementById('news-content').value);
+            formData.append('detailContent', document.getElementById('news-detail-content').value);
+            formData.append('link', document.getElementById('news-link').value);
+            const file = document.getElementById('news-thumbnail').files[0];
+            if (file) formData.append('thumbnail', file);
+
+            try {
+                newsStatus.textContent = editingNewsId ? '수정 중...' : '등록 중...';
+                newsStatus.className = 'status-msg';
+                newsStatus.style.display = 'block';
+
+                const url = editingNewsId ? `${API_BASE}/news/${editingNewsId}` : `${API_BASE}/news`;
+                const method = editingNewsId ? 'PUT' : 'POST';
+
+                const res = await fetch(url, {
+                    method: method,
+                    headers: getAuthHeader(),
+                    body: formData
+                });
+
+                if (res.ok) {
+                    newsStatus.textContent = editingNewsId ? '수정 완료되었습니다.' : '등록 완료되었습니다.';
+                    newsStatus.className = 'status-msg success';
+                    newsForm.reset();
+                    editingNewsId = null;
+                    document.querySelector('#news-form .btn-submit').textContent = '뉴스 등록하기';
+                    loadNewsManageList();
+                } else {
+                    const data = await res.json();
+                    throw new Error(data.error || '처리 실패');
+                }
+            } catch (err) {
+                newsStatus.textContent = err.message;
+                newsStatus.className = 'status-msg error';
+            }
+        });
+
+        async function loadNewsManageList() {
+            const list = document.getElementById('news-manage-list');
+            try {
+                const res = await fetch(`${API_BASE}/news`);
+                const data = await res.json();
+                list.innerHTML = data.map(item => `
+                    <div style="border-bottom: 1px solid #eee; padding: 15px 0; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="display:block;">${item.title}</strong>
+                            <small style="color: #64748b;">${item.date}</small>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick='editNews(${JSON.stringify(item).replace(/'/g, "&apos;")})' style="background: #3b82f6; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">수정</button>
+                            <button onclick="deleteNews(${item.id})" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer;">삭제</button>
+                        </div>
+                    </div>
+                `).join('') || '<p style="color: #64748b; text-align: center; padding: 20px;">등록된 뉴스가 없습니다.</p>';
+            } catch (err) {
+                console.error('News load error:', err);
+            }
+        }
+
+        window.editNews = function(item) {
+            editingNewsId = item.id;
+            document.getElementById('news-title').value = item.title;
+            document.getElementById('news-date').value = item.date;
+            document.getElementById('news-content').value = item.content;
+            document.getElementById('news-detail-content').value = item.detailContent || '';
+            document.getElementById('news-link').value = item.link || '';
+            document.querySelector('#news-form .btn-submit').textContent = '뉴스 수정 완료';
+            window.scrollTo({ top: newsForm.offsetTop - 100, behavior: 'smooth' });
+        };
+
+        window.deleteNews = async function(id) {
+            console.log('Deleting news ID:', id);
+            if (!confirm('뉴스를 삭제하시겠습니까?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/news/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeader()
+                });
+                if (res.ok) {
+                    loadNewsManageList();
+                } else {
+                    const data = await res.json();
+                    alert('삭제 실패: ' + (data.error || '알 수 없는 오류'));
+                }
+            } catch (err) {
+                alert('오류 발생: ' + err.message);
+            }
+        };
+
+        // 2. 갤러리 관리 로직
+        const galleryForm = document.getElementById('gallery-form');
+        const galleryStatus = document.getElementById('gallery-status');
+
+        galleryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('description', document.getElementById('gallery-desc').value);
+            const files = document.getElementById('gallery-photos').files;
+            for (let i = 0; i < files.length; i++) formData.append('photos', files[i]);
+
+            try {
+                galleryStatus.textContent = '업로드 중...';
+                galleryStatus.className = 'status-msg';
+                galleryStatus.style.display = 'block';
+
+                const res = await fetch(`${API_BASE}/gallery`, {
+                    method: 'POST',
+                    headers: getAuthHeader(),
+                    body: formData
+                });
+
+                if (res.ok) {
+                    galleryStatus.textContent = '업로드 완료되었습니다.';
+                    galleryStatus.className = 'status-msg success';
+                    galleryForm.reset();
+                    loadGalleryManageList();
+                } else {
+                    const data = await res.json();
+                    throw new Error(data.error || '업로드 실패');
+                }
+            } catch (err) {
+                galleryStatus.textContent = err.message;
+                galleryStatus.className = 'status-msg error';
+            }
+        });
+
+        async function loadGalleryManageList() {
+            const list = document.getElementById('gallery-manage-list');
+            try {
+                const res = await fetch(`${API_BASE}/gallery`);
+                const data = await res.json();
+                list.innerHTML = data.map(item => `
+                    <div style="position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                        <img src="${item.url}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <button onclick="editPhoto(${item.id}, '${item.description}')" style="position: absolute; top: 5px; left: 5px; background: rgba(59, 130, 246, 0.8); color: white; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 12px;">수정</button>
+                        <button onclick="deletePhoto(${item.id})" style="position: absolute; top: 5px; right: 5px; background: rgba(220, 38, 38, 0.8); color: white; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 12px;">삭제</button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error('Gallery load error:', err);
+            }
+        }
+
+        window.editPhoto = async function(id, oldDesc) {
+            const newDesc = prompt('사진 설명을 수정하세요:', oldDesc);
+            if (newDesc === null || newDesc === oldDesc) return;
+            try {
+                const res = await fetch(`${API_BASE}/gallery/${id}`, {
+                    method: 'PUT',
+                    headers: { ...getAuthHeader(), 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ description: newDesc })
+                });
+                if (res.ok) loadGalleryManageList();
+            } catch (err) {
+                alert('오류 발생');
+            }
+        };
+
+        window.deletePhoto = async function(id) {
+            console.log('Deleting photo ID:', id);
+            if (!confirm('정말 삭제하시겠습니까?')) return;
+            try {
+                const res = await fetch(`${API_BASE}/gallery/${id}`, {
+                    method: 'DELETE',
+                    headers: getAuthHeader()
+                });
+                if (res.ok) {
+                    loadGalleryManageList();
+                } else {
+                    const data = await res.json();
+                    alert('삭제 실패: ' + (data.error || '알 수 없는 오류'));
+                }
+            } catch (err) {
+                alert('오류 발생');
+            }
+        };
+
+        // 초기 실행
+        checkAuth();
+    </script>
+</body>
+
+</html>

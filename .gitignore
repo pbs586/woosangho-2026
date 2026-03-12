@@ -1,0 +1,5 @@
+node_modules/
+.env
+.DS_Store
+*.log
+# uploads/ 는 나중에 서버 환경에 따라 제외할지 결정 (무료 서버는 파일이 초기화될 수 있음)

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>최신 뉴스 - 우상호 캠페인 (v2.1)</title>
+    <!-- Google Fonts: Outfit, Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Pretendard Variable Font -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .list-header {
+            padding: 120px 0 60px;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+            color: white;
+            text-align: center;
+        }
+
+        .list-header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .news-list-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+            min-height: 400px; /* 로딩 전에도 영역 확보 */
+        }
+
+        @media (max-width: 1024px) {
+            .news-list-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .news-list-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .list-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" style="background-color: white;">
+        <div class="container">
+            <a href="index.html" class="logo"><span>강원특별자치도지사 후보</span> 우상호</a>
+            <ul class="nav-links">
+                <li><a href="index.html#hero">홈</a></li>
+                <li><a href="index.html#profile">후보소개</a></li>
+                <li><a href="index.html#news">최신뉴스</a></li>
+                <li><a href="index.html#gallery">활동현장</a></li>
+                <li class="hide-temporary"><a href="index.html#pledges">지역공약</a></li>
+                <li class="hide-temporary"><a href="index.html#support">지지하기</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="list-header">
+        <div class="container">
+            <h1>최신 뉴스</h1>
+            <p>우상호 후보의 생생한 활동 소식을 전해드립니다.</p>
+        </div>
+    </header>
+
+    <main class="section">
+        <div class="container">
+            <div class="news-list-grid" id="news-grid">
+                <!-- 뉴스 아이템이 여기에 동적으로 렌더링됩니다 -->
+                <div class="text-center" style="grid-column: 1/-1; padding: 100px;">
+                    <p style="color: var(--text-muted);">뉴스를 불러오는 중...</p>
+                </div>
+            </div>
+
+            <div id="load-more-container" class="text-center" style="margin-top: 60px; display: none;">
+                <button id="btn-load-more" class="btn btn-outline" style="min-width: 200px; color: var(--primary-color); border-color: var(--primary-color); background: white;">뉴스 더보기 +</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- News Modal -->
+    <div id="news-modal" class="modal">
+        <div class="modal-content news-modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="news-modal-body">
+                <div class="news-modal-img-container">
+                    <img id="news-modal-img" src="" alt="">
+                </div>
+                <div class="news-modal-info">
+                    <span id="news-modal-date" class="date"></span>
+                    <h2 id="news-modal-title"></h2>
+                    <div id="news-modal-summary" class="news-modal-summary" style="font-weight: 600; color: var(--primary-dark); margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #eee;"></div>
+                    <div id="news-modal-text" class="news-modal-text" style="line-height: 1.8; color: #444; white-space: pre-wrap; margin-bottom: 30px;"></div>
+                    <div class="news-modal-footer">
+                        <a id="news-modal-link" href="#" target="_blank" class="btn btn-primary" style="display: none; width: 100%; text-align: center;">기사 원문 보기</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 우상호 강원특별자치도지사 후보 캠페인. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        let allNews = [];
+        let currentIndex = 0;
+        const itemsPerPage = 9;
+
+        // 스크롤 애니메이션 옵저버
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        async function init() {
+            try {
+                console.log('Fetching news...');
+                const res = await fetch('/api/news');
+                if (!res.ok) throw new Error('Network response was not ok');
+                allNews = await res.json();
+                console.log('News loaded:', allNews.length);
+                renderBatch();
+            } catch (err) {
+                console.error('Load Error:', err);
+                document.getElementById('news-grid').innerHTML = `
+                    <div class="text-center" style="grid-column: 1/-1; padding: 60px;">
+                        <p style="color: red; margin-bottom: 20px;">뉴스를 불러오는 과정에서 오류가 발생했습니다.</p>
+                        <button class="btn btn-primary" onclick="location.reload()">새로고침</button>
+                    </div>
+                `;
+            }
+        }
+
+        function renderBatch() {
+            const grid = document.getElementById('news-grid');
+            const loadMoreBtn = document.getElementById('load-more-container');
+            
+            if (currentIndex === 0) grid.innerHTML = '';
+
+            const nextBatch = allNews.slice(currentIndex, currentIndex + itemsPerPage);
+            
+            if (nextBatch.length > 0) {
+                const frag = document.createDocumentFragment();
+                nextBatch.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'news-card animate-up';
+                    card.style.cursor = 'pointer';
+                    card.innerHTML = `
+                        <div class="news-img" style="background-image: url('${item.thumbnailUrl || '/placeholder.jpg'}'); background-size: cover; background-position: center; height: 220px;"></div>
+                        <div class="news-info">
+                            <span class="date">${item.date}</span>
+                            <h3>${item.title}</h3>
+                            <p>${item.content}</p>
+                        </div>
+                    `;
+                    card.onclick = () => openNewsModal(item);
+                    grid.appendChild(card);
+                    observer.observe(card);
+                });
+                
+                currentIndex += nextBatch.length;
+            }
+
+            loadMoreBtn.style.display = (currentIndex < allNews.length) ? 'block' : 'none';
+        }
+
+        function openNewsModal(item) {
+            console.log('Opening modal for:', item.title);
+            const modal = document.getElementById('news-modal');
+            const modalImg = document.getElementById('news-modal-img');
+            const modalDate = document.getElementById('news-modal-date');
+            const modalSummary = document.getElementById('news-modal-summary');
+            const modalTitle = document.getElementById('news-modal-title');
+            const modalText = document.getElementById('news-modal-text');
+            const modalLink = document.getElementById('news-modal-link');
+
+            if (modalImg) {
+                modalImg.src = item.thumbnailUrl || '/placeholder.jpg';
+                modalImg.alt = item.title;
+            }
+            modalDate.textContent = item.date;
+            modalTitle.textContent = item.title;
+            if (modalSummary) modalSummary.textContent = item.content || '';
+            modalText.textContent = item.detailContent || item.content || '';
+
+            if (item.link) {
+                modalLink.href = item.link;
+                modalLink.style.display = 'inline-block';
+            } else {
+                modalLink.style.display = 'none';
+            }
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close logic
+        document.querySelectorAll('.close-modal').forEach(btn => {
+            btn.onclick = () => {
+                document.getElementById('news-modal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            };
+        });
+
+        window.onclick = (e) => {
+            const modal = document.getElementById('news-modal');
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        };
+
+        window.onkeydown = (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('news-modal').style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        };
+
+        document.getElementById('btn-load-more').addEventListener('click', renderBatch);
+
+        // Start
+        init();
+    </script>
+</body>
+
+</html>
