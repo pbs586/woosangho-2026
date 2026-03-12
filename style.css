@@ -257,7 +257,6 @@ h3 {
     #mobile-menu.active .bar:nth-child(3) {
         transform: translateY(-9px) rotate(-45deg);
     }
-}
 
 /* Hero Section (Clean) */
 .hero-clean {
