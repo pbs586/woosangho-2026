@@ -65,6 +65,11 @@
                 <li class="hide-temporary"><a href="index.html#pledges">지역공약</a></li>
                 <li class="hide-temporary"><a href="index.html#support">지지하기</a></li>
             </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
         </div>
     </nav>
 
@@ -198,6 +203,24 @@
         };
 
         document.getElementById('btn-load-more').addEventListener('click', renderBatch);
+
+        // Mobile Menu Toggle Logic
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        if (menuToggle && navLinks) {
+            menuToggle.onclick = () => {
+                menuToggle.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            };
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.onclick = () => {
+                    menuToggle.classList.remove('active');
+                    navLinks.classList.remove('active');
+                };
+            });
+        }
+
+        // Start
         init();
     </script>
 </body>

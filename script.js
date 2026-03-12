@@ -228,7 +228,32 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchMainData();
     fetchPledges();
 
-    // 7. 모달 닫기 로직
+    // 7. Mobile Menu Toggle
+    const menuToggle = document.getElementById('mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+            if (navLinks.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Close menu when link is clicked
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                navLinks.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+        });
+    }
+
+    // 8. 모달 닫기 로직
     const pledgeModal = document.getElementById('pledge-modal');
     const galleryModal = document.getElementById('gallery-modal');
     const newsModal = document.getElementById('news-modal'); // 추가
