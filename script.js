@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #aaa;">No Image</div>
                             </div>`}
                             <div class="today-info">
-                                <span class="date">${item.date}</span>
                                 <p>${item.description || '내용 없음'}</p>
                             </div>
                         </div>
