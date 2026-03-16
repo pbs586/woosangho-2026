@@ -148,6 +148,11 @@
     </nav>
 
     <div class="admin-container">
+        <!-- 깃허브 백업 실행 버튼 -->
+        <button id="backup-git-btn" style="width: 100%; padding: 16px; background: #22c55e; color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-bottom: 25px; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2); transition: all 0.2s;" onclick="triggerGitBackup()">
+            💾 작성한 글/사진 깃허브에 영구 저장 (백업)
+        </button>
+
         <!-- 우상호의 오늘 등록 -->
         <div class="cms-form">
             <h2>🎥 우상호의 오늘 등록</h2>
@@ -248,6 +253,35 @@
         const getAuthHeader = () => ({
             'x-admin-password': sessionStorage.getItem('adminPassword')
         });
+
+        async function triggerGitBackup() {
+            const btn = document.getElementById('backup-git-btn');
+            if (!confirm('현재까지의 데이터를 깃허브에 영구 저장(백업)하시겠습니까?')) return;
+
+            try {
+                btn.disabled = true;
+                btn.innerHTML = '🔄 백업 진행 중 (약 30초 소요)...';
+                btn.style.opacity = '0.7';
+
+                const res = await fetch(`${API_BASE}/backup`, {
+                    method: 'POST',
+                    headers: getAuthHeader()
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    alert(data.message);
+                } else {
+                    alert('백업 실패: ' + (data.error || '알 수 없는 오류'));
+                }
+            } catch (err) {
+                alert('네트워크 오류 발생');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '💾 작성한 글/사진 깃허브에 영구 저장 (백업)';
+                btn.style.opacity = '1';
+            }
+        }
 
         const loginOverlay = document.getElementById('login-overlay');
         const passwordInput = document.getElementById('admin-password-input');

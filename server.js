@@ -327,6 +327,33 @@ app.delete('/api/today/:id', verifyPassword, (req, res) => {
     }
 });
 
+const { exec } = require('child_process');
+
+// === 깃허브 자동 백업 API ===
+app.post('/api/backup', verifyPassword, (req, res) => {
+    const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+    if (!GITHUB_TOKEN) {
+        return res.status(400).json({ error: '서버에 GITHUB_TOKEN이 설정되어 있지 않습니다. 클라우드타입 설정 분과에 추가해 주세요.' });
+    }
+
+    const repoUrl = `https://${GITHUB_TOKEN}@github.com/pbs586/woosangho-2026.git`;
+    
+    // 리눅스 명령어 (CloudType 탑재 환경)
+    const cmd = `git config user.name "BackupBot" && git config user.email "backup@bot.com" && git add . && git commit -m "data: manual backup" && git push ${repoUrl} main`;
+
+    exec(cmd, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Git push error: ${error.message}`);
+            // 이미 최신 상태(nothing to commit)인 경우 성공으로 간주할 수도 있음
+            if (stderr.includes('nothing to commit')) {
+                return res.json({ message: '이미 최신 데이터가 반영되어 있습니다.' });
+            }
+            return res.status(500).json({ error: '백업 실패: ' + error.message, details: stderr });
+        }
+        res.json({ message: '백업 완료! 데이터가 깃허브에 저장되었습니다.' });
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
