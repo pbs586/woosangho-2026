@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname));
 
 // 관리자 비밀번호 (보안을 위해 환경변수 사용)
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ? process.env.ADMIN_PASSWORD.trim() : null;
 
 // 비밀번호 검증 미들웨어
 const verifyPassword = (req, res, next) => {
