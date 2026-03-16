@@ -32,6 +32,7 @@ const DATA_DIR = path.join(__dirname, 'data');
 const NEWS_FILE = path.join(DATA_DIR, 'news.json');
 const GALLERY_FILE = path.join(DATA_DIR, 'gallery.json');
 const PLEDGES_FILE = path.join(DATA_DIR, 'pledges.json');
+const TODAY_FILE = path.join(DATA_DIR, 'today.json');
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
 
 // 기본 데이터 파일이 없으면 생성
@@ -39,6 +40,7 @@ if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
 if (!fs.existsSync(NEWS_FILE)) fs.writeFileSync(NEWS_FILE, JSON.stringify([]));
 if (!fs.existsSync(GALLERY_FILE)) fs.writeFileSync(GALLERY_FILE, JSON.stringify([]));
 if (!fs.existsSync(PLEDGES_FILE)) fs.writeFileSync(PLEDGES_FILE, JSON.stringify({}));
+if (!fs.existsSync(TODAY_FILE)) fs.writeFileSync(TODAY_FILE, JSON.stringify([]));
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR);
 
 // 간단한 로거 미들웨어
@@ -70,8 +72,12 @@ async function optimizeImage(buffer, filename) {
 // 뉴스 목록 조회
 app.get('/api/news', (req, res) => {
     const data = JSON.parse(fs.readFileSync(NEWS_FILE));
-    // ID(타임스탬프) 기준 내림차순 정렬 (최신순)
-    data.sort((a, b) => b.id - a.id);
+    // 날짜 연월일 스트링 기준 내림차순 정렬 (최신순)
+    data.sort((a, b) => {
+        const dateCompare = (b.date || '').localeCompare(a.date || '');
+        if (dateCompare !== 0) return dateCompare;
+        return b.id - a.id;
+    });
     res.json(data);
 });
 
@@ -173,6 +179,11 @@ app.delete('/api/news/:id', verifyPassword, (req, res) => {
 // 갤러리 목록 조회
 app.get('/api/gallery', (req, res) => {
     const data = JSON.parse(fs.readFileSync(GALLERY_FILE));
+    data.sort((a, b) => {
+        const dateCompare = (b.date || '').localeCompare(a.date || '');
+        if (dateCompare !== 0) return dateCompare;
+        return b.id - a.id;
+    });
     res.json(data);
 });
 
@@ -247,6 +258,67 @@ app.delete('/api/gallery/:id', verifyPassword, (req, res) => {
         fs.writeFileSync(GALLERY_FILE, JSON.stringify(gallery, null, 2));
 
         res.json({ message: '사진이 성공적으로 삭제되었습니다.' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// === 우상호의 오늘 API ===
+
+app.get('/api/today', (req, res) => {
+    const data = JSON.parse(fs.readFileSync(TODAY_FILE));
+    data.sort((a, b) => {
+        const dateCompare = (b.date || '').localeCompare(a.date || '');
+        if (dateCompare !== 0) return dateCompare;
+        return b.id - a.id;
+    });
+    res.json(data);
+});
+
+app.post('/api/today', verifyPassword, upload.single('photo'), async (req, res) => {
+    try {
+        const { description } = req.body;
+        let imageUrl = '';
+
+        if (req.file) {
+            imageUrl = await optimizeImage(req.file.buffer, req.file.originalname);
+        }
+
+        const today = JSON.parse(fs.readFileSync(TODAY_FILE));
+        const newItem = {
+            id: Date.now(),
+            imageUrl,
+            description: description || '',
+            date: new Date().toISOString().split('T')[0]
+        };
+        today.unshift(newItem);
+        fs.writeFileSync(TODAY_FILE, JSON.stringify(today, null, 2));
+
+        res.status(201).json(newItem);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.delete('/api/today/:id', verifyPassword, (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        let today = JSON.parse(fs.readFileSync(TODAY_FILE));
+        const itemIndex = today.findIndex(item => item.id === id);
+
+        if (itemIndex === -1) {
+            return res.status(404).json({ error: '해당 항목을 찾을 수 없습니다.' });
+        }
+
+        const item = today[itemIndex];
+        if (item.imageUrl) {
+            const filePath = path.join(__dirname, item.imageUrl);
+            if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+        }
+
+        today.splice(itemIndex, 1);
+        fs.writeFileSync(TODAY_FILE, JSON.stringify(today, null, 2));
+        res.json({ message: '삭제되었습니다.' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

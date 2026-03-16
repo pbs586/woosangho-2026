@@ -34,6 +34,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. API 데이터 연동 (뉴스 & 갤러리)
     async function fetchMainData() {
         try {
+            // 0. 우상호의 오늘 데이터 (최근 1개)
+            const todayRes = await fetch('/api/today');
+            if (todayRes.ok) {
+                const todayData = await todayRes.json();
+                const todaySection = document.getElementById('today');
+                const todayContent = document.getElementById('today-content');
+                
+                if (todaySection && todayContent && todayData.length > 0) {
+                    const item = todayData[0]; // 가장 최신 1개 사용
+                    todaySection.style.display = 'block';
+                    todayContent.innerHTML = `
+                        <div class="today-card">
+                            <div class="today-img" style="${item.imageUrl ? `background-image: url('${item.imageUrl}'); background-size: cover; background-position: center;` : 'background: #eee;'}">
+                                ${!item.imageUrl ? `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #aaa;">No Image</div>` : ''}
+                            </div>
+                            <div class="today-info">
+                                <span class="date">${item.date}</span>
+                                <p>${item.description || '내용 없음'}</p>
+                            </div>
+                        </div>
+                    `;
+                } else if (todaySection) {
+                    todaySection.style.display = 'none';
+                }
+            }
+
             // 뉴스 데이터 (최근 3개)
             const newsRes = await fetch('/api/news');
             if (newsRes.ok) {
