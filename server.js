@@ -13,6 +13,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
+// 외부 마운트 디스크를 위한 정적 파일 서빙 추가
+const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(__dirname, 'uploads');
+app.use('/uploads', express.static(UPLOADS_DIR));
 
 // 관리자 비밀번호 (보안을 위해 환경변수 사용)
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ? process.env.ADMIN_PASSWORD.trim() : null;
@@ -28,12 +31,12 @@ const verifyPassword = (req, res, next) => {
 };
 
 // 데이터 파일 경로
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
 const NEWS_FILE = path.join(DATA_DIR, 'news.json');
 const GALLERY_FILE = path.join(DATA_DIR, 'gallery.json');
 const PLEDGES_FILE = path.join(DATA_DIR, 'pledges.json');
 const TODAY_FILE = path.join(DATA_DIR, 'today.json');
-const UPLOADS_DIR = path.join(__dirname, 'uploads');
+// UPLOADS_DIR는 상단에서 이미 정의됨
 
 // 기본 데이터 파일이 없으면 생성
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
