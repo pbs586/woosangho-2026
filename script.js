@@ -46,9 +46,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     todaySection.style.display = 'block';
                     todayContent.innerHTML = `
                         <div class="today-card">
-                            <div class="today-img" style="${item.imageUrl ? `background-image: url('${item.imageUrl}'); background-size: cover; background-position: center;` : 'background: #eee;'}">
-                                ${!item.imageUrl ? `<div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #aaa;">No Image</div>` : ''}
-                            </div>
+                            ${item.imageUrl ? `
+                            <a href="${item.imageUrl}" target="_blank" style="display: block; height: 100%; width: 100%; text-decoration: none; cursor: pointer;">
+                                <div class="today-img" style="background-image: url('${item.imageUrl}'); background-size: cover; background-position: center; height: 100%;"></div>
+                            </a>` : `
+                            <div class="today-img" style="background: #eee;">
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #aaa;">No Image</div>
+                            </div>`}
                             <div class="today-info">
                                 <span class="date">${item.date}</span>
                                 <p>${item.description || '내용 없음'}</p>
