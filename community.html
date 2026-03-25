@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>함께 소통해요 - 우상호 캠페인</title>
+    <meta name="description" content="우상호 후보와 함께하는 카카오톡 오픈채팅방에 참여하세요. 강원도민방, 전국응원방, 출향민방으로 소통합니다.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Pretendard Variable Font -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 소통 페이지 전용 헤더: 카카오 노랑 → 파란 캠페인 색 그라데이션 */
+        .community-header {
+            padding: 120px 0 70px;
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 50%, #2196f3 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 배경 장식 원형 */
+        .community-header::before,
+        .community-header::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .community-header::before {
+            width: 400px;
+            height: 400px;
+            top: -150px;
+            right: -80px;
+        }
+
+        .community-header::after {
+            width: 220px;
+            height: 220px;
+            bottom: -80px;
+            left: 5%;
+        }
+
+        .community-header .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #FEE500;
+            color: #3A1D1D;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 7px 18px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+        }
+
+        .community-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .community-header p {
+            font-size: 1.15rem;
+            opacity: 0.88;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .community-header h1 { font-size: 2.2rem; }
+        }
+
+        /* 채팅방 카드 그리드 */
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        @media (max-width: 900px) {
+            .room-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 580px) {
+            .room-grid { grid-template-columns: 1fr; }
+        }
+
+        /* 카드 공통 스타일 */
+        .room-card {
+            background: #fff;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .room-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(26, 92, 186, 0.15);
+        }
+
+        /* 카드 상단 컬러 배너 */
+        .room-card-banner {
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .room-card-banner.gwondo {
+            background: linear-gradient(135deg, #1A5CBA, #4A89E8);
+        }
+
+        .room-card-banner.jeonkuk {
+            background: linear-gradient(135deg, #0D3F8C, #1A5CBA);
+        }
+
+        .room-card-banner.chulhyang {
+            background: linear-gradient(135deg, #2176D8, #3B90E8);
+        }
+
+        /* 카드 배너 배경 원형 장식 */
+        .room-card-banner::after {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            right: -20px;
+            bottom: -30px;
+        }
+
+        .room-card-banner span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 카드 하단 정보 */
+        .room-card-info {
+            padding: 28px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .room-card-tag {
+            display: inline-block;
+            background: rgba(26, 92, 186, 0.08);
+            color: var(--primary-color);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 50px;
+            margin-bottom: 14px;
+            width: fit-content;
+        }
+
+        .room-card-info h3 {
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .room-card-info p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.65;
+            flex: 1;
+            margin-bottom: 24px;
+        }
+
+        /* 입장 버튼: 카카오 노랑 */
+        .room-join-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #FEE500;
+            color: #3A1D1D;
+            font-weight: 700;
+            font-size: 0.95rem;
+            font-family: var(--font-main);
+            padding: 13px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .room-join-btn:hover {
+            background: #F5DC00;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(254, 229, 0, 0.5);
+        }
+
+        /* 하단 안내 섹션 */
+        .community-info-section {
+            background: var(--bg-light);
+            border-radius: 24px;
+            padding: 48px;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .community-info-section h2 {
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+        }
+
+        .community-info-section p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .community-info-section {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" style="background-color: white;">
+        <div class="container">
+            <a href="index.html" class="logo"><span>강원특별자치도지사 후보</span> 우상호</a>
+            <ul class="nav-links">
+                <li><a href="index.html#hero">홈</a></li>
+                <li><a href="index.html#news">최신뉴스</a></li>
+                <li><a href="index.html#gallery">활동현장</a></li>
+                <li><a href="index.html#profile">후보소개</a></li>
+                <li>
+                    <!-- 현재 페이지이므로 active 스타일 적용 -->
+                    <a href="community.html" style="color: var(--primary-color); font-weight: 700;">함께 소통해요</a>
+                </li>
+            </ul>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 페이지 헤더 -->
+    <header class="community-header">
+        <div class="container">
+            <div class="badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#3A1D1D">
+                    <path d="M12 3C6.477 3 2 6.582 2 11c0 2.682 1.523 5.044 3.855 6.548L5 21l4.08-2.172A11.66 11.66 0 0 0 12 19c5.523 0 10-3.582 10-8S17.523 3 12 3z"/>
+                </svg>
+                카카오 오픈채팅
+            </div>
+            <h1>우상호와 함께 소통해요!</h1>
+            <p>강원의 변화를 함께 만들어가는 카카오톡 오픈채팅방에 참여하세요</p>
+        </div>
+    </header>
+
+    <main class="section">
+        <div class="container">
+
+            <!-- 채팅방 3개 카드 -->
+            <div class="room-grid">
+
+                <!-- 강원도민방 -->
+                <div class="room-card animate-up">
+                    <div class="room-card-banner gwondo">
+                        <span>🏔️</span>
+                    </div>
+                    <div class="room-card-info">
+                        <span class="room-card-tag">강원도민 전용</span>
+                        <h3>강원도민방</h3>
+                        <p>강원도에 살고 계신 도민이라면 누구나 환영합니다! 지역 현안, 공약, 일상 이야기를 함께 나누며 강원의 미래를 만들어가요.</p>
+                        <a href="https://open.kakao.com/o/g1V9zani" target="_blank" rel="noopener noreferrer" class="room-join-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#3A1D1D">
+                                <path d="M12 3C6.477 3 2 6.582 2 11c0 2.682 1.523 5.044 3.855 6.548L5 21l4.08-2.172A11.66 11.66 0 0 0 12 19c5.523 0 10-3.582 10-8S17.523 3 12 3z"/>
+                            </svg>
+                            오픈채팅 입장하기
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 전국응원방 -->
+                <div class="room-card animate-up">
+                    <div class="room-card-banner jeonkuk">
+                        <span>🇰🇷</span>
+                    </div>
+                    <div class="room-card-info">
+                        <span class="room-card-tag">전국 지지자</span>
+                        <h3>전국응원방</h3>
+                        <p>강원 밖에서도 우상호 후보를 응원하는 분들의 공간입니다. 전국 각지에서 열정 가득한 응원 메시지를 보내주세요!</p>
+                        <a href="https://open.kakao.com/o/g7cEEani" target="_blank" rel="noopener noreferrer" class="room-join-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#3A1D1D">
+                                <path d="M12 3C6.477 3 2 6.582 2 11c0 2.682 1.523 5.044 3.855 6.548L5 21l4.08-2.172A11.66 11.66 0 0 0 12 19c5.523 0 10-3.582 10-8S17.523 3 12 3z"/>
+                            </svg>
+                            오픈채팅 입장하기
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 출향민방 -->
+                <div class="room-card animate-up">
+                    <div class="room-card-banner chulhyang">
+                        <span>🌏</span>
+                    </div>
+                    <div class="room-card-info">
+                        <span class="room-card-tag">출향민 모임</span>
+                        <h3>출향민방</h3>
+                        <p>고향 강원을 사랑하는 출향민들의 특별한 공간입니다. 강원도를 떠났지만 마음속엔 항상 고향을 품고 사는 모든 분을 환영합니다.</p>
+                        <a href="https://open.kakao.com/o/gQIxBani" target="_blank" rel="noopener noreferrer" class="room-join-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#3A1D1D">
+                                <path d="M12 3C6.477 3 2 6.582 2 11c0 2.682 1.523 5.044 3.855 6.548L5 21l4.08-2.172A11.66 11.66 0 0 0 12 19c5.523 0 10-3.582 10-8S17.523 3 12 3z"/>
+                            </svg>
+                            오픈채팅 입장하기
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 하단 안내 -->
+            <div class="community-info-section animate-up">
+                <h2>소통이 강원의 힘입니다</h2>
+                <p>
+                    우상호 후보는 도민 여러분의 목소리에 귀 기울입니다.<br>
+                    오픈채팅방에서 여러분의 생각과 아이디어를 자유롭게 나눠주세요.<br>
+                    함께할수록 강원의 미래는 더욱 밝아집니다.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 우상호 강원특별자치도지사 후보 캠페인. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 스크롤 애니메이션
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-up').forEach(el => observer.observe(el));
+
+        // 모바일 메뉴 토글
+        const menuToggle = document.getElementById('mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        if (menuToggle && navLinks) {
+            menuToggle.onclick = () => {
+                menuToggle.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            };
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.onclick = () => {
+                    menuToggle.classList.remove('active');
+                    navLinks.classList.remove('active');
+                };
+            });
+        }
+
+        // 네비 스크롤 효과
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.style.padding = '12px 0';
+                navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
+            } else {
+                navbar.style.padding = '20px 0';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
