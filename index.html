@@ -28,6 +28,15 @@
                 <li><a href="#news">최신뉴스</a></li>
                 <li><a href="#gallery">활동현장</a></li>
                 <li><a href="#profile">후보소개</a></li>
+                <!-- 카카오톡 오픈채팅 버튼: 방문자가 즉시 커뮤니티에 참여할 수 있도록 유도 -->
+                <li>
+                    <button class="kakao-nav-btn" id="kakao-open-btn" onclick="openKakaoPopup()" aria-label="카카오톡 오픈채팅 열기">
+                        <svg class="kakao-icon" viewBox="0 0 24 24" width="18" height="18" fill="#3A1D1D">
+                            <path d="M12 3C6.477 3 2 6.582 2 11c0 2.682 1.523 5.044 3.855 6.548L5 21l4.08-2.172A11.66 11.66 0 0 0 12 19c5.523 0 10-3.582 10-8S17.523 3 12 3z"/>
+                        </svg>
+                        함께 소통해요
+                    </button>
+                </li>
                 <li class="nav-social">
                     <a href="https://www.facebook.com/woosangho/" target="_blank" title="페이스북" class="facebook">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -195,6 +204,66 @@
         </div>
     </section>
 
+    <!-- 카카오톡 오픈채팅 팝업 오버레이 (리디자인) -->
+    <div id="kakao-popup" class="kakao-popup-overlay" role="dialog" aria-modal="true" aria-label="카카오톡 오픈채팅방 목록">
+        <div class="kakao-popup-box">
+            <!-- 파란 그라데이션 헤더 영역 -->
+            <div class="kakao-popup-header">
+                <div class="kakao-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#3A1D1D">
+                        <path d="M12 3C6.477 3 2 6.582 2 11c0 2.682 1.523 5.044 3.855 6.548L5 21l4.08-2.172A11.66 11.66 0 0 0 12 19c5.523 0 10-3.582 10-8S17.523 3 12 3z"/>
+                    </svg>
+                    카카오 오픈채팅
+                </div>
+                <h3 class="kakao-popup-title">우상호와 동행,<br>지금 함께하세요!</h3>
+                <p class="kakao-popup-subtitle">강원도의 변화를 함께 만들어가는 공간입니다</p>
+                <!-- 장식용 원형 요소 -->
+                <div class="kakao-header-circle c1"></div>
+                <div class="kakao-header-circle c2"></div>
+            </div>
+
+            <!-- 채팅방 목록 -->
+            <div class="kakao-popup-body">
+                <p class="kakao-section-label">채팅방 선택</p>
+                <div class="kakao-room-list">
+                    <a href="https://open.kakao.com/o/g1V9zani" target="_blank" rel="noopener noreferrer" class="kakao-room-item">
+                        <span class="kakao-room-icon">🏔️</span>
+                        <div class="kakao-room-info">
+                            <strong>강원도민방</strong>
+                            <span>강원도민이라면 누구나 환영합니다</span>
+                        </div>
+                        <span class="kakao-room-arrow">›</span>
+                    </a>
+                    <a href="https://open.kakao.com/o/g7cEEani" target="_blank" rel="noopener noreferrer" class="kakao-room-item">
+                        <span class="kakao-room-icon">🇰🇷</span>
+                        <div class="kakao-room-info">
+                            <strong>전국응원방</strong>
+                            <span>전국 지지지들의 소통공간입니다</span>
+                        </div>
+                        <span class="kakao-room-arrow">›</span>
+                    </a>
+                    <a href="https://open.kakao.com/o/gQIxBani" target="_blank" rel="noopener noreferrer" class="kakao-room-item">
+                        <span class="kakao-room-icon">🌏</span>
+                        <div class="kakao-room-info">
+                            <strong>출향민방</strong>
+                            <span>고향 강원을 사랑하는 모든 분께</span>
+                        </div>
+                        <span class="kakao-room-arrow">›</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 하단: 오늘 하루 보지 않기 + 닫기 -->
+            <div class="kakao-popup-footer">
+                <label class="kakao-no-today">
+                    <input type="checkbox" id="kakao-no-today-chk">
+                    <span>오늘 하루 보지 않기</span>
+                </label>
+                <button class="kakao-popup-close" onclick="closeKakaoPopup()" aria-label="닫기">&times;</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="container">
             <p>&copy; 2026 우상호 강원특별자치도지사 후보 캠페인. All Rights Reserved.</p>
@@ -244,6 +313,39 @@
     <!-- Image Map Resizer Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/image-map-resizer/1.0.10/js/imageMapResizer.min.js"></script>
     <script src="script.js"></script>
+    <script>
+        // 카카오 팝업 열기
+        function openKakaoPopup() {
+            document.getElementById('kakao-popup').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        // 카카오 팝업 닫기 — 오늘 하루 보지 않기 체크 시 localStorage에 저장
+        function closeKakaoPopup() {
+            const noToday = document.getElementById('kakao-no-today-chk');
+            if (noToday && noToday.checked) {
+                const todayStr = new Date().toISOString().split('T')[0];
+                localStorage.setItem('kakaoPopupHideDate', todayStr);
+            }
+            document.getElementById('kakao-popup').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        // 오버레이 바깥 클릭 시 닫기
+        document.getElementById('kakao-popup').addEventListener('click', function(e) {
+            if (e.target === this) closeKakaoPopup();
+        });
+        // ESC 키로 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeKakaoPopup();
+        });
+        // 접속 즉시 팝업 표시 — 오늘 하루 보지 않기를 선택한 경우 제외
+        window.addEventListener('load', function() {
+            const hideDate = localStorage.getItem('kakaoPopupHideDate');
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (hideDate !== todayStr) {
+                setTimeout(openKakaoPopup, 1200);
+            }
+        });
+    </script>
 </body>
 
 </html>
