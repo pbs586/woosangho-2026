@@ -1573,67 +1573,39 @@ h3 {
 /* ===== Community Section & Room Grid ===== */
 .room-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
 }
 
-@media (max-width: 900px) {
-    .room-grid { grid-template-columns: 1fr 1fr; }
-}
-
-@media (max-width: 580px) {
-    .room-grid { grid-template-columns: 1fr; }
+@media (max-width: 768px) {
+    .room-grid { 
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
 }
 
 .room-card {
     background: #fff;
-    border-radius: 24px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     text-decoration: none;
     color: inherit;
     transition: var(--transition);
     display: flex;
     flex-direction: column;
+    border-top: 4px solid var(--primary-color);
 }
 
 .room-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 50px rgba(26, 92, 186, 0.15);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(26, 92, 186, 0.12);
 }
 
-.room-card-banner {
-    height: 140px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.room-card-banner.gwondo { background: linear-gradient(135deg, #1A5CBA, #4A89E8); }
-.room-card-banner.jeonkuk { background: linear-gradient(135deg, #0D3F8C, #1A5CBA); }
-.room-card-banner.chulhyang { background: linear-gradient(135deg, #2176D8, #3B90E8); }
-
-.room-card-banner::after {
-    content: '';
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.1);
-    right: -20px;
-    bottom: -30px;
-}
-
-.room-card-banner span {
-    position: relative;
-    z-index: 1;
-}
+/* Banner styles removed as per requirement for cleaner list layout */
 
 .room-card-info {
-    padding: 28px;
+    padding: 24px;
     flex: 1;
     display: flex;
     flex-direction: column;
