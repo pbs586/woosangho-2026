@@ -187,43 +187,101 @@ h3 {
 .nav-links {
     display: flex;
     list-style: none;
-    gap: 32px;
+    gap: 16px; /* Optimized gap for better fit */
+    align-items: center;
 }
 
 .nav-links a {
     text-decoration: none;
     color: var(--text-dark);
-    font-weight: 500;
-    font-size: 0.95rem;
+    font-weight: 700;
+    font-size: 1.2rem; /* Balanced size to feel matching but fit the layout */
     transition: var(--transition);
+    position: relative;
+    padding: 2px 0;
+    display: inline-block;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background-color: var(--primary-color);
+    transition: var(--transition);
+    border-radius: 2px;
 }
 
 .nav-links a:hover {
     color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
 }
 
 .nav-social {
     display: flex;
     align-items: center;
-    margin-left: 15px;
-    gap: 15px;
+    margin-left: 12px;
+    gap: 12px;
+    border-left: 1px solid rgba(0,0,0,0.1);
+    padding-left: 16px;
 }
 
 .nav-social a {
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
     transition: var(--transition);
+    background: rgba(0,0,0,0.02);
 }
 
 .nav-social a:hover {
-    transform: translateY(-3px) scale(1.1);
-    filter: brightness(1.1);
+    background: rgba(0,0,0,0.06);
+    transform: translateY(-2px);
 }
 
-.nav-social a:active {
-    transform: translateY(0) scale(0.95);
+.nav-social svg {
+    display: block;
+    width: 20px;
+    height: 20px;
 }
+
+.nav-social .social-label {
+    display: none; /* Hidden on desktop */
+}
+
+/* Close Menu Button (Mobile Only) */
+.close-menu-container {
+    display: none;
+    width: 100%;
+    justify-content: flex-end;
+    padding: 0 30px;
+    margin-bottom: 20px !important;
+}
+
+.close-menu {
+    font-size: 3rem;
+    color: var(--primary-color);
+    cursor: pointer;
+    line-height: 1;
+    transition: var(--transition);
+}
+
+.close-menu:hover {
+    color: var(--primary-dark);
+    transform: scale(1.1);
+}
+
 
 /* Mobile Menu Toggle */
 .menu-toggle {
@@ -700,39 +758,34 @@ h3 {
     }
 }
 
-/* ===== KakaoTalk 오픈채팅 네비 버튼 ===== */
-/* 카카오 공식 브랜드 색상(#FEE500)을 사용해 한눈에 카카오임을 인지하도록 함 */
+/* ===== KakaoTalk 오픈채팅 네비 버튼 (Reset to Clean Text) ===== */
 .kakao-nav-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    background-color: #FEE500;
-    color: #3A1D1D;
-    border: none;
-    border-radius: 50px;
-    padding: 9px 18px;
-    font-size: 0.88rem;
-    font-weight: 700;
-    font-family: var(--font-main);
-    cursor: pointer;
-    transition: var(--transition);
-    box-shadow: 0 3px 12px rgba(254, 229, 0, 0.45);
-    white-space: nowrap;
-    letter-spacing: -0.02em;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    color: var(--text-dark) !important;
 }
 
 .kakao-nav-btn:hover {
-    background-color: #F5DC00;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(254, 229, 0, 0.6);
+    background: none !important;
+    color: var(--primary-color) !important;
+    transform: translateY(-1px) !important;
 }
 
-.kakao-nav-btn:active {
-    transform: translateY(0);
+/* ===== 후원하기 네비 버튼 (Reset to Clean Text) ===== */
+.support-nav-btn {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    color: var(--text-dark) !important;
 }
 
-.kakao-icon {
-    flex-shrink: 0;
+.support-nav-btn:hover {
+    background: none !important;
+    color: var(--primary-color) !important;
+    transform: translateY(-1px) !important;
 }
 
 /* ===== KakaoTalk 팝업 오버레이 (리디자인) ===== */
@@ -1370,8 +1423,35 @@ h3 {
     .nav-social {
         margin-left: 0 !important;
         justify-content: center !important;
-        margin-top: 20px !important;
-        display: flex !important;
+        margin-top: 30px !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+        border-left: none !important;
+        padding-left: 0 !important;
+        width: 100% !important;
+    }
+
+    .nav-social a {
+        width: auto !important;
+        height: auto !important;
+        background: none !important;
+        border-radius: 0 !important;
+        gap: 10px !important;
+        font-size: 1.6rem !important;
+        font-weight: 700 !important;
+        color: var(--primary-dark) !important;
+    }
+
+    .nav-social svg {
+        display: none !important; /* Hide icons in mobile nav per user request */
+    }
+
+    .nav-social .social-label {
+        display: inline-block !important; /* Show text labels in mobile nav */
+    }
+
+    .close-menu-container {
+        display: flex !important; /* Show close button in mobile nav */
     }
 }
 
@@ -1635,5 +1715,77 @@ h3 {
 @media (max-width: 768px) {
     .community-info-section {
         padding: 32px 24px;
+    }
+}
+
+/* ===== Footer Re-design ===== */
+.footer {
+    background-color: #111;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 60px 0 40px;
+    text-align: center;
+}
+
+.footer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.footer-social {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.footer-social a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.footer-social a:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.footer-social svg {
+    width: 24px;
+    height: 24px;
+}
+
+.footer p {
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+}
+
+.footer-bottom {
+    margin-top: 5px;
+}
+
+.admin-link {
+    color: rgba(255, 255, 255, 0.3);
+    text-decoration: none;
+    font-size: 13px;
+    transition: var(--transition);
+}
+
+.admin-link:hover {
+    color: var(--white);
+}
+
+@media (max-width: 768px) {
+    .footer {
+        padding: 40px 0 30px;
+    }
+    .footer-container {
+        gap: 24px;
     }
 }

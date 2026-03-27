@@ -1,0 +1,318 @@
+/* ============================================
+   support.css - 후원하기 페이지 스타일
+   심플하고 가독성 중심의 레이아웃
+   ============================================ */
+
+/* ----- 파란 텍스트 헤더 배너 ----- */
+/* 사이트 주색(#1A5CBA)에 맞춘 그라데이션 배너 - 히어로 사진 제거 후 텍스트로 대체 */
+.sp-hero-banner {
+    margin-top: 70px; /* navbar 오프셋 */
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 60%, #2e78d6 100%);
+    position: relative;
+    overflow: hidden;
+    padding: 72px 0 60px;
+}
+
+/* 배경 장식 원형: 단조로움을 없애되 시각적 노이즈는 최소화 */
+.sp-hero-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.06);
+    pointer-events: none;
+}
+
+.sp-hero-circle-1 {
+    width: 320px;
+    height: 320px;
+    right: -80px;
+    top: -100px;
+}
+
+.sp-hero-circle-2 {
+    width: 200px;
+    height: 200px;
+    left: 5%;
+    bottom: -80px;
+}
+
+.sp-hero-inner {
+    position: relative;
+    z-index: 1;
+}
+
+.sp-hero-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.sp-hero-title {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    margin-bottom: 12px;
+}
+
+.sp-hero-sub {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 400;
+    margin-bottom: 28px;
+}
+
+.sp-hero-divider {
+    width: 40px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.4);
+    margin-bottom: 18px;
+}
+
+.sp-hero-legal {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* ----- 메인 컨텐츠 ----- */
+.sp-main {
+    background: var(--bg-light);
+    min-height: 60vh;
+}
+
+.sp-content {
+    padding: 56px 24px 80px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* ----- 후원 안내 통합 카드 ----- */
+.sp-card {
+    background: #fff;
+    border-radius: 16px;
+    border: 1px solid #e8edf3;
+    overflow: hidden;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.sp-section-block {
+    padding: 36px 44px;
+}
+
+.sp-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 0;
+}
+
+.sp-block-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+}
+
+/* 계좌 정보 */
+.sp-account-row {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.sp-account-item {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+}
+
+.sp-account-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    min-width: 70px;
+    flex-shrink: 0;
+}
+
+.sp-account-value {
+    font-size: 0.98rem;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+/* 계좌번호: 크고 굵게 */
+.sp-account-num {
+    font-size: 1.55rem;
+    font-weight: 800;
+    font-family: var(--font-display);
+    color: var(--primary-dark);
+    letter-spacing: 0.02em;
+}
+
+/* 복사 버튼 */
+.sp-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    background: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    padding: 0 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    font-family: var(--font-main);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.sp-copy-btn:hover {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+.sp-copy-btn.copied {
+    background: #16a34a;
+    border-color: #16a34a;
+    color: #fff;
+}
+
+/* 복사 완료 토스트 */
+.sp-copy-toast {
+    margin-top: 12px;
+    font-size: 0.85rem;
+    color: #16a34a;
+    font-weight: 500;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.sp-copy-toast.show {
+    height: auto;
+    opacity: 1;
+}
+
+/* 후원 혜택 목록 */
+.sp-benefit-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.sp-benefit-list li {
+    font-size: 0.97rem;
+    color: var(--text-dark);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.6;
+}
+
+.sp-benefit-list li::before {
+    content: '-';
+    position: absolute;
+    left: 0;
+    color: var(--text-muted);
+}
+
+/* 금지 안내 */
+.sp-notice {
+    font-size: 0.88rem;
+    color: #b91c1c;
+    padding: 10px 14px;
+    background: #fef2f2;
+    border-radius: 8px;
+    border-left: 3px solid #f87171;
+    line-height: 1.5;
+}
+
+/* 영수증 링크 */
+.sp-receipt-row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sp-receipt-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.sp-receipt-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    min-width: 70px;
+    flex-shrink: 0;
+}
+
+.sp-receipt-link {
+    font-size: 0.97rem;
+    color: var(--primary-color);
+    font-weight: 500;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.sp-receipt-link:hover {
+    text-decoration: underline;
+    color: var(--primary-dark);
+}
+
+.sp-receipt-org {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* 강조 섹션 (영수증 발급 등) */
+.sp-priority-block {
+    background: rgba(26, 92, 186, 0.04);
+    border-left: 4px solid var(--primary-color);
+}
+
+.sp-priority-block .sp-block-title {
+    color: var(--primary-color);
+}
+
+.sp-priority-block .sp-receipt-link {
+    font-size: 1.05rem;
+    border-bottom: 1px solid rgba(26, 92, 186, 0.2);
+    padding-bottom: 2px;
+}
+
+/* ----- 반응형 ----- */
+@media (max-width: 640px) {
+    .sp-hero-banner {
+        padding: 56px 0 44px;
+    }
+
+    .sp-hero-title {
+        font-size: 2.2rem;
+    }
+
+    .sp-section-block {
+        padding: 28px 24px;
+    }
+
+    .sp-account-num {
+        font-size: 1.25rem;
+    }
+
+    .sp-account-item {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+}

@@ -36,6 +36,7 @@ const NEWS_FILE = path.join(DATA_DIR, 'news.json');
 const GALLERY_FILE = path.join(DATA_DIR, 'gallery.json');
 const PLEDGES_FILE = path.join(DATA_DIR, 'pledges.json');
 const TODAY_FILE = path.join(DATA_DIR, 'today.json');
+const MESSAGES_FILE = path.join(DATA_DIR, 'messages.json');
 // UPLOADS_DIR는 상단에서 이미 정의됨
 
 // 기본 데이터 파일이 없으면 생성
@@ -44,6 +45,7 @@ if (!fs.existsSync(NEWS_FILE)) fs.writeFileSync(NEWS_FILE, JSON.stringify([]));
 if (!fs.existsSync(GALLERY_FILE)) fs.writeFileSync(GALLERY_FILE, JSON.stringify([]));
 if (!fs.existsSync(PLEDGES_FILE)) fs.writeFileSync(PLEDGES_FILE, JSON.stringify({}));
 if (!fs.existsSync(TODAY_FILE)) fs.writeFileSync(TODAY_FILE, JSON.stringify([]));
+if (!fs.existsSync(MESSAGES_FILE)) fs.writeFileSync(MESSAGES_FILE, JSON.stringify([]));
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR);
 
 // 간단한 로거 미들웨어
@@ -328,6 +330,72 @@ app.delete('/api/today/:id', verifyPassword, (req, res) => {
 });
 
 const { exec } = require('child_process');
+
+// === 응원 메시지 API ===
+
+// 응원 메시지 목록 조회 (최신순)
+app.get('/api/messages', (req, res) => {
+    try {
+        const data = JSON.parse(fs.readFileSync(MESSAGES_FILE));
+        // 등록 시간 기준 내림차순 정렬
+        data.sort((a, b) => b.id - a.id);
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: '메시지 데이터를 불러오는데 실패했습니다.' });
+    }
+});
+
+// 응원 메시지 등록 (비공개 스팸 방지: 이름+내용 필수)
+app.post('/api/messages', (req, res) => {
+    try {
+        const { name, region, message } = req.body;
+
+        // 필수 필드 검증
+        if (!name || !message) {
+            return res.status(400).json({ error: '이름과 응원 메시지는 필수 입력 항목입니다.' });
+        }
+        // 내용 길이 제한 (스팸 방지)
+        if (message.length > 300) {
+            return res.status(400).json({ error: '메시지는 300자 이내로 작성해 주세요.' });
+        }
+
+        const messages = JSON.parse(fs.readFileSync(MESSAGES_FILE));
+        const newMsg = {
+            id: Date.now(),
+            name: name.trim().substring(0, 20),
+            region: (region || '').trim().substring(0, 20),
+            message: message.trim(),
+            createdAt: new Date().toISOString()
+        };
+        messages.unshift(newMsg);
+        fs.writeFileSync(MESSAGES_FILE, JSON.stringify(messages, null, 2));
+
+        res.status(201).json(newMsg);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 응원 메시지 삭제 (관리자 전용)
+app.delete('/api/messages/:id', verifyPassword, (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        let messages = JSON.parse(fs.readFileSync(MESSAGES_FILE));
+        const itemIndex = messages.findIndex(item => item.id === id);
+
+        if (itemIndex === -1) {
+            return res.status(404).json({ error: '해당 메시지를 찾을 수 없습니다.' });
+        }
+
+        messages.splice(itemIndex, 1);
+        fs.writeFileSync(MESSAGES_FILE, JSON.stringify(messages, null, 2));
+        res.json({ message: '메시지가 삭제되었습니다.' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 
 // === 깃허브 자동 백업 API ===
 app.post('/api/backup', verifyPassword, (req, res) => {
