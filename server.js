@@ -434,6 +434,11 @@ app.post('/api/backup', verifyPassword, (req, res) => {
     });
 });
 
+// === 카카오톡 오픈채팅 경로 추가 ===
+app.get('/kakao', (req, res) => {
+    res.sendFile(path.join(__dirname, 'kakao.html'));
+});
+
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
